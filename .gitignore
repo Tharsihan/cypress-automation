@@ -1,0 +1,6 @@
+node_modules
+.idea
+yarn.lock
+cypress/videos
+cypress/screenshots
+mochawesome-report

@@ -1,0 +1,52 @@
+def gitCommit
+pipeline {
+    agent {
+            docker {
+                image 'cypress/browsers:node14.15.0-chrome96-ff94'
+                // Run the container on the node specified at the top-level of the Pipeline, in the same workspace, rather than on a new node entirely:
+                reuseNode true
+            }
+        }
+    environment {
+        HOME = '.'
+        CYPRESS_VIDEO=false
+        NO_COLOR=1
+        CI=1
+        CHOKIDAR_USEPOLLING=1 // fix a cypress runner Error with files watcher
+    }
+    options {
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    scmVars = checkout([
+                        $class: 'GitSCM',
+                        extensions: [[$class: 'LocalBranch']],
+                        userRemoteConfigs: [[
+                             refspec: '+refs/pull-requests/*/from:refs/remotes/origin/pr/*',
+                             url: 'ssh://git@bitbucket.babel.fr:7999/rfrqa/qa_testautomation_ws_rakuten-js.git',
+                        ]]
+                    ])
+                }
+            }
+        }
+
+        stage('npm install') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('npm run cypress:e2e:chrome:headless') {
+            steps {
+                sh './node_modules/.bin/cypress install'
+                sh 'npm run cypress:e2e:chrome:headless'
+              
+            }
+        }
+    }
+
+}

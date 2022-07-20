@@ -1,0 +1,19 @@
+{
+  "testFiles": "**/*.{feature,js}",
+  "reporter": "mochawesome",
+  "reporterOptions": {
+    "reporDir": "cypress/report/mochawesome-report",
+    "overwrite": true,
+    "html": true,
+    "json": false
+  },
+  "projectId": "o5nqnv",
+  "viewportWidth": 1920,
+  "viewportHeight": 1080,
+
+  "env": {
+    "platform": "desktop"
+  },
+  "retries": 0
+}
+
